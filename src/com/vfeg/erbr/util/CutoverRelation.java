@@ -62,11 +62,12 @@ public class CutoverRelation {
         }else if(relationType.equals("INCOMING")){
             //- relationSourceRnc //- relationSourceRncOSS //- destinationCellExternal
             fillRelationSourceRncAndOSS();
-            fetchExternalCell(relationDestinationCell,relationDestinationRnc,relationDestinationRncOSS);
+            fetchExternalCell(relationDestinationCell,relationSourceRnc,relationDestinationRncOSS);
         }
     }
     
     public void fillRelationDestinationRncAndOSS(){
+        
        if(relationDestinationCell!=null){
         if(relationDestinationCell.length()>2){
            if(relationDestinationCell.contains("MeContext")){ // Tested and Validated
@@ -108,10 +109,13 @@ public class CutoverRelation {
     
     public void fetchExternalCell(String cellName,String rnc,String oss){
         String cId=null;
-        if(cellName!=null){
+        if(relationId.contains("00101>K31733")){
+            System.out.println("");
+        }
+        if(cellName!=null && rnc!=null){
             if(cellName.length()>2){
                 if(cellName.contains("MeContext")){
-                    cellName = cellName.substring(cellName.indexOf("UtranCell=")+10);
+                    cellName = cellName.substring(cellName.indexOf("UtranCell=")+10); // 04941
                     tmp = MongoClient.getExternalUtranCellCollection().find(Filters.eq("_id", cellName)).first();
                     if(tmp!=null){ // found normal external cell
                         destinationCellExternal = tmp;
@@ -134,14 +138,14 @@ public class CutoverRelation {
                         }
                      }
                  }
-                 
-                 if(cellName.contains("6022-")){
+
+                if(cellName.contains("6022-")){
                     cId = cellName.split("-")[2];
+                    rnc = cellName.split("-")[1];
                  }
                 
-                if(cId!=null){
-                tmp = MongoClient.getExternalUtranCellCollection().find(
-                and(Filters.regex("_id", "6022-.*-"+cId),Filters.eq("ossNr", Integer.parseInt(oss)))).first();
+                if(cId!=null){ // "51232"
+                tmp = MongoClient.getExternalUtranCellCollection().find(Filters.regex("_id", "6022-"+rnc.replaceAll("\\D+", "")+"-"+cId)).first();
                 if(tmp!=null){
                      destinationCellExternal = tmp;
                      tmp = MongoClient.getUtranCellCollection().find(
@@ -150,21 +154,19 @@ public class CutoverRelation {
                          externalUtranCellName = tmp.getString("_id");
                      }
                 }else{
-                    tmp = MongoClient.getExternalUtranCellCollection().find(Filters.regex("_id", "6022-.*-"+cId)).first();
-                    if(tmp!=null){
-                       destinationCellExternal = tmp;
-                     tmp = MongoClient.getUtranCellCollection().find(
-                    and(Filters.eq("cId", destinationCellExternal.get("cId")),Filters.eq("rnc", "RNC"+destinationCellExternal.get("rncId")))).first();
-                     if(tmp!=null){
-                         externalUtranCellName = tmp.getString("_id");
-                     } 
-                    }else{
                         externalNotDefined = true;
                         tmp = MongoClient.getUtranCellCollection().find(Filters.eq("_id", cellName)).first();
                         if(tmp!=null){ // found normal external cell
-                            destinationCellExternal = tmp; 
-                         }
-                    }
+                            destinationCellExternal = tmp;
+                            externalUtranCellName = tmp.getString("_id");
+                         }else{
+                           tmp = MongoClient.getUtranCellCollection().find(Filters.eq("cId", cId)).first();  
+                           if(tmp!=null){
+                               destinationCellExternal = tmp;
+                                externalUtranCellName = tmp.getString("_id");
+                           }
+                        }
+                    
                 }
                 }
             }
@@ -175,6 +177,7 @@ public class CutoverRelation {
     
     //---------- XML Generation -----------------// 
     public void doLogic(String sourceRncOSS, String targetRncOSS,String targetLac){
+        try{
         if(sourceRncOSS.equals(targetRncOSS)){
             //<editor-fold defaultstate="collapsed" desc="S=T">
             if(relationType.equals("INCOMING")){ //- S=T (Check SourceCell)
@@ -202,12 +205,12 @@ public class CutoverRelation {
                     //--> Create externalCell on relationSourceRncOSS with new RncId
                     XMLGenerator.addScript(relationSourceRncOSS, "EXTERNAL_CREATION", 
                                             destinationCellExternal.getString("_id"), 
-                                            generateExternalUtranCell(relationSourceRncOSS, relationDestinationRnc,targetLac));
+                                            generateExternalUtranCell(relationSourceRncOSS, relationDestinationRnc,targetLac,true));
                     //--> Define Incoming Relation as External on relationSourceRncOSS 
                     XMLGenerator.addScript(relationSourceRncOSS,"RELATION_CREATION",
                                             relationId,
                                             generateUtranRelations(relationSourceRncOSS, relationSourceRnc,relationSourceCell,
-                                                    getDestinationNameExternal(destinationCellExternal)));
+                                                    getDestinationNameExternal(destinationCellExternal,true)));
                     XMLGenerator.addRNC(relationSourceRncOSS, relationSourceRnc);
                     //</editor-fold>
                 }
@@ -227,13 +230,13 @@ public class CutoverRelation {
                     if(externalNotDefined){
                        XMLGenerator.addScript(targetRncOSS,"EXTERNAL_CREATION", 
                                             destinationCellExternal.getString("_id"), 
-                                            generateExternalUtranCell(targetRncOSS, relationDestinationRnc, null)); 
+                                            generateExternalUtranCell(targetRncOSS, relationDestinationRnc, null,false)); 
                     }
                     //-> Define relation on Target OSS as External
                     XMLGenerator.addScript(targetRncOSS,"RELATION_CREATION",
                                             relationId,
                                             generateUtranRelations(targetRncOSS, relationSourceRnc,relationSourceCell,
-                                                    getDestinationNameExternal(destinationCellExternal)));
+                                                    getDestinationNameExternal(destinationCellExternal,false)));
                     XMLGenerator.addRNC(relationSourceRncOSS, relationSourceRnc);
                     //</editor-fold>
                 }
@@ -263,21 +266,15 @@ public class CutoverRelation {
                     //</editor-fold>
                 }else if(!targetRncOSS.equals(relationSourceRncOSS)){ //- S!=T & T!=N
                     //<editor-fold defaultstate="collapsed" desc="T!=N">
-//                    if(destinationCellExternal!=null){
-//                    //-> Delete delete external cell
-//                    XMLGenerator.addScript(relationSourceRncOSS, "EXTERNAL_DELETION", 
-//                                            destinationCellExternal.getString("_id"), 
-//                                            deleteExternalUtranCell());
-//                    }
                     //-> Define External Cell on relationSourceRncOSS with new RncId
                     XMLGenerator.addScript(relationSourceRncOSS, "EXTERNAL_CREATION", 
                                             destinationCellExternal.getString("_id"), 
-                                            generateExternalUtranCell(relationSourceRncOSS, relationDestinationRnc, targetLac));
+                                            generateExternalUtranCell(relationSourceRncOSS, relationDestinationRnc, targetLac,true));
                     //-> Define Incoming Relations on relationSourceRncOSS as External
                     XMLGenerator.addScript(relationSourceRncOSS,"RELATION_CREATION",
                                             relationId,
                                             generateUtranRelations(relationSourceRncOSS, relationSourceRnc,relationSourceCell,
-                                                    getDestinationNameExternal(destinationCellExternal)));
+                                                    getDestinationNameExternal(destinationCellExternal,true)));
                     XMLGenerator.addRNC(relationSourceRncOSS, relationSourceRnc);
                 //</editor-fold>
                 }
@@ -297,13 +294,13 @@ public class CutoverRelation {
                     if(externalNotDefined){
                        XMLGenerator.addScript(targetRncOSS,"EXTERNAL_CREATION", 
                                             destinationCellExternal.getString("_id"), 
-                                            generateExternalUtranCell(targetRncOSS, relationDestinationRnc, null));  
+                                            generateExternalUtranCell(targetRncOSS, relationDestinationRnc, null,false));  
                     }
                     //-> Define Outgoing Relations on TaregtOSS
                     XMLGenerator.addScript(targetRncOSS,"RELATION_CREATION",
                                             relationId,
                                             generateUtranRelations(targetRncOSS, relationSourceRnc,relationSourceCell,
-                                                    getDestinationNameExternal(destinationCellExternal)));
+                                                    getDestinationNameExternal(destinationCellExternal,false)));
                     XMLGenerator.addRNC(relationSourceRncOSS, relationSourceRnc);
                     //</editor-fold>
                 }
@@ -318,7 +315,9 @@ public class CutoverRelation {
                                                     getDestinationNameInternal(relationDestinationCell,relationDestinationRnc)));
            XMLGenerator.addRNC(relationSourceRncOSS, relationSourceRnc); 
         }
-        
+        }catch(Exception e){
+            System.out.println("Relation : "+relationId+" went into an error!!!!!!: "+e.getMessage());
+        }
     }
     
 
@@ -473,13 +472,14 @@ public class CutoverRelation {
 
     }
     
-    public String getDestinationNameExternal(Document destination){
+    public String getDestinationNameExternal(Document destination, boolean useCellName){
         if(destination!=null){
-            if(externalNotDefined){
-        return "SubNetwork="+AppConf.getSubNetwork()+",ExternalUtranCell="+destinationCellExternal.getString("_id");        
-            }else{
-        return "SubNetwork="+AppConf.getSubNetwork()+",ExternalUtranCell="+(externalUtranCellName!=null?externalUtranCellName:destinationCellExternal.getString("_id"));
-            }
+//            if(externalNotDefined){
+//        return "SubNetwork="+AppConf.getSubNetwork()+",ExternalUtranCell="+destinationCellExternal.getString("_id");        
+//            }else{
+        return "SubNetwork="+AppConf.getSubNetwork()+",ExternalUtranCell="+(useCellName?
+                (externalUtranCellName!=null?externalUtranCellName:destinationCellExternal.getString("_id")):destinationCellExternal.getString("_id"));
+//            }
         }else{
             return null;
         }
@@ -600,11 +600,12 @@ public class CutoverRelation {
         }
     }
     
-     public String generateExternalUtranCell(String oss,String rncId,String targetLac){
+     public String generateExternalUtranCell(String oss,String rncId,String targetLac,boolean useCellName){
         try{
         //<editor-fold defaultstate="collapsed" desc="Param">
         String externalUtranCellStr=
-        "<un:ExternalUtranCell id=\""+(externalUtranCellName!=null?externalUtranCellName:destinationCellExternal.getString("_id"))+"\" modifier=\"create\">\n" +
+        "<un:ExternalUtranCell id=\""+(useCellName?
+                (externalUtranCellName!=null?externalUtranCellName:destinationCellExternal.getString("_id")):destinationCellExternal.getString("_id"))+"\" modifier=\"create\">\n" +
         "    <un:attributes>\n" +
         "     <un:cId>"+destinationCellExternal.getString("cId")+"</un:cId>\n";
         
@@ -620,7 +621,8 @@ public class CutoverRelation {
         "     <un:uarfcnUl>"+destinationCellExternal.get("uarfcnUl")+"</un:uarfcnUl>\n" +
         "     <un:userLabel>"+destinationCellExternal.get("userLabel")+"</un:userLabel>\n" +
         "    </un:attributes>\n" +
-        " <xn:VsDataContainer id=\""+(externalUtranCellName!=null?externalUtranCellName:destinationCellExternal.getString("_id"))+"\" modifier=\"create\">\n" +
+        " <xn:VsDataContainer id=\""+(useCellName?
+                (externalUtranCellName!=null?externalUtranCellName:destinationCellExternal.getString("_id")):destinationCellExternal.getString("_id"))+"\" modifier=\"create\">\n" +
         "  <xn:attributes>\n" +
         " <xn:vsDataType>vsDataExternalUtranCell</xn:vsDataType>\n" +
         " <xn:vsDataFormatVersion>"+AppConf.getVsDataFormatVersion()+"</xn:vsDataFormatVersion>\n" +
