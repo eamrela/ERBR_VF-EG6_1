@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * @author eelaamr
  */
 public class AppConf {
-    private static String appVersion = "6_1";
+    private static String appVersion = "6_3";
     //<editor-fold defaultstate="collapsed" desc="vars">
     private static String confFilePath;
     private static String mongoIp;

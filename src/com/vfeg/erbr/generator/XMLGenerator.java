@@ -32,14 +32,16 @@ public class XMLGenerator {
     private static TreeMap<String,TreeMap<String,String>> utranRelationDeletion = new TreeMap<String, TreeMap<String, String>>();
     private static TreeMap<String,TreeMap<String,String>> externalUtranCreation = new TreeMap<String, TreeMap<String, String>>();
     private static TreeMap<String,TreeMap<String,String>> utranRelationCreation = new TreeMap<String, TreeMap<String, String>>();
+    private static TreeMap<String,TreeMap<String,String>> paramterAdjustmentCreation = new TreeMap<String, TreeMap<String, String>>();
     private static TreeMap<String,TreeMap<String,String>> involvedRncs = new TreeMap<String, TreeMap<String, String>>();
     private static TreeMap<String,TreeMap<Integer,String>> fileFooters = new TreeMap<String,TreeMap<Integer,String>>();
     
     public static void resetCollections(){
         externalUtranCreation = new TreeMap<String, TreeMap<String, String>>();
         utranRelationDeletion = new TreeMap<String, TreeMap<String, String>>();
-        externalUtranCreation = new TreeMap<String, TreeMap<String, String>>();
+        externalUtranDeletion = new TreeMap<String, TreeMap<String, String>>();
         utranRelationCreation = new TreeMap<String, TreeMap<String, String>>();
+        paramterAdjustmentCreation = new TreeMap<String, TreeMap<String, String>>();
         involvedRncs = new TreeMap<String, TreeMap<String, String>>();
         counts = new TreeMap<String,Integer>();
         fileFooters = new TreeMap<String,TreeMap<Integer,String>>();
@@ -74,6 +76,13 @@ public class XMLGenerator {
                 utranRelationCreation.put(oss, new TreeMap<String, String>());
                 utranRelationCreation.get(oss).put(id, script);
             }
+        }else if(type.equals("PARAMTER_ADJUSTMENT")){
+            if(paramterAdjustmentCreation.containsKey(oss)){
+                paramterAdjustmentCreation.get(oss).put(id, script);
+            }else{
+                paramterAdjustmentCreation.put(oss, new TreeMap<String, String>());
+                paramterAdjustmentCreation.get(oss).put(id, script);
+            }
         }
     }
     
@@ -96,7 +105,7 @@ public class XMLGenerator {
                 mtxDir.mkdirs();
         }
         String filePath = null;
-        if(fileName.contains("DEFINE_UtranRelation")){
+        if(fileName.contains("DEFINE_UtranRelation") || fileName.contains("ADJUSTMENT_ExternalUtranCell")){
             if(getCounter("relationCountForFile"+targetOSS)<AppConf.getRelationPerFile()){
             filePath = AppConf.getWorkingDir()+"/OSS_"+targetOSS+"/"+fileName+"_"+getCounter("filesCounters"+targetOSS)+".xml";
             addCounter("relationCountForFile"+targetOSS, false);
@@ -264,6 +273,12 @@ public class XMLGenerator {
         for (Map.Entry<String, TreeMap<String, String>> entry : utranRelationCreation.entrySet()) {
             for (Map.Entry<String, String> entry1 : entry.getValue().entrySet()) {
                 appendToFile("DEFINE_UtranRelation", entry1.getValue(), entry.getKey());
+            }
+        }
+        
+        for (Map.Entry<String, TreeMap<String, String>> entry : paramterAdjustmentCreation.entrySet()) {
+            for (Map.Entry<String, String> entry1 : entry.getValue().entrySet()) {
+                appendToFile("ADJUSTMENT_ExternalUtranCell", entry1.getValue(), entry.getKey());
             }
         }
         addFooters();

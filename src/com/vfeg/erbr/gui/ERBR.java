@@ -63,6 +63,7 @@ public class ERBR extends javax.swing.JFrame {
         generateXmlBtn = new javax.swing.JButton();
         generateXmlBtn1 = new javax.swing.JButton();
         loadRehomingBtn1 = new javax.swing.JButton();
+        paramterAdjustment = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         databaseStatus = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -99,6 +100,11 @@ public class ERBR extends javax.swing.JFrame {
         lastUtranRelationOSS2 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         lastUtranRelationOSS4 = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
+        jPanel11 = new javax.swing.JPanel();
+        WorkingDirLabel2 = new javax.swing.JLabel();
+        paramterWorkingDirPath = new javax.swing.JLabel();
+        paramterWorkingDirBtn = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -176,6 +182,14 @@ public class ERBR extends javax.swing.JFrame {
             }
         });
 
+        paramterAdjustment.setText("Adjust uarfcnUl");
+        paramterAdjustment.setEnabled(false);
+        paramterAdjustment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                paramterAdjustmentActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -185,8 +199,9 @@ public class ERBR extends javax.swing.JFrame {
             .addComponent(updateClientBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(dumpLogBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(generateXmlBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(generateXmlBtn1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(generateXmlBtn1, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
             .addComponent(loadRehomingBtn1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(paramterAdjustment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -205,6 +220,8 @@ public class ERBR extends javax.swing.JFrame {
                 .addComponent(generateXmlBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(generateXmlBtn1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(paramterAdjustment)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -295,7 +312,7 @@ public class ERBR extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(202, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Rehoming", jPanel1);
@@ -532,10 +549,69 @@ public class ERBR extends javax.swing.JFrame {
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lastUtranRelationOSS4)))
-                .addContainerGap(89, Short.MAX_VALUE))
+                .addContainerGap(186, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Collection Status", jPanel10);
+
+        jPanel9.setBackground(new java.awt.Color(255, 255, 255));
+
+        jPanel11.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Paramter Adjustment"));
+
+        WorkingDirLabel2.setText("Working Directory:");
+
+        paramterWorkingDirPath.setForeground(new java.awt.Color(153, 153, 153));
+        paramterWorkingDirPath.setText("Please browse for working directory DIR");
+
+        paramterWorkingDirBtn.setText("Browse");
+        paramterWorkingDirBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                paramterWorkingDirBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
+        jPanel11.setLayout(jPanel11Layout);
+        jPanel11Layout.setHorizontalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(WorkingDirLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(paramterWorkingDirPath, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(paramterWorkingDirBtn))
+        );
+        jPanel11Layout.setVerticalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(WorkingDirLabel2)
+                    .addComponent(paramterWorkingDirPath)
+                    .addComponent(paramterWorkingDirBtn))
+                .addContainerGap(66, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(199, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Paramter Adjustment", jPanel9);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -582,11 +658,11 @@ public class ERBR extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(databaseStatus)
-                        .addGap(106, 106, 106))))
+                        .addGap(59, 59, 59))))
         );
 
         fileMenu.setMnemonic('f');
@@ -628,8 +704,8 @@ public class ERBR extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 11, Short.MAX_VALUE))
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -757,6 +833,32 @@ public class ERBR extends javax.swing.JFrame {
         RehomingPlanBtn1.setEnabled(true);
     }//GEN-LAST:event_loadRehomingBtn1ActionPerformed
 
+    private void paramterAdjustmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paramterAdjustmentActionPerformed
+        paramterAdjustment.setEnabled(false);
+        processor.setWorkingDir(WorkingDir.getText());
+        new Thread(){
+            @Override
+            public void run() {
+                processor.createRunDirs();
+                processor.doParamterAdjustment();
+                paramterAdjustment.setEnabled(true);
+            }
+            
+        }.start();
+    }//GEN-LAST:event_paramterAdjustmentActionPerformed
+
+    private void paramterWorkingDirBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paramterWorkingDirBtnActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int result = fileChooser.showOpenDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            WorkingDir.setText(fileChooser.getSelectedFile().getAbsolutePath());
+            paramterWorkingDirPath.setText(fileChooser.getSelectedFile().getAbsolutePath());
+            updateParamterAdjustmentBtnStatus();
+        }
+    }//GEN-LAST:event_paramterWorkingDirBtnActionPerformed
+
     private void updateRehomingAndGenerationBtnStatus(){
         if( RehomingFilePath.getText().toLowerCase().contains(".csv") && 
                 (WorkingDir.getText().toLowerCase().contains("\\") || WorkingDir.getText().toLowerCase().contains("/"))){
@@ -769,6 +871,12 @@ public class ERBR extends javax.swing.JFrame {
                 (WorkingDir.getText().toLowerCase().contains("\\") || WorkingDir.getText().toLowerCase().contains("/"))){
             loadRehomingBtn1.setEnabled(true);
             generateXmlBtn1.setEnabled(true);
+        }
+    }
+    
+    private void updateParamterAdjustmentBtnStatus(){
+        if((WorkingDir.getText().toLowerCase().contains("\\") || WorkingDir.getText().toLowerCase().contains("/"))){
+            paramterAdjustment.setEnabled(true);
         }
     }
     
@@ -824,6 +932,7 @@ public class ERBR extends javax.swing.JFrame {
     private javax.swing.JButton WorkingDirBtn1;
     private javax.swing.JLabel WorkingDirLabel;
     private javax.swing.JLabel WorkingDirLabel1;
+    private javax.swing.JLabel WorkingDirLabel2;
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JButton checkDbBtn;
     private javax.swing.JLabel databaseStatus;
@@ -843,6 +952,7 @@ public class ERBR extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -850,6 +960,7 @@ public class ERBR extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lastUtranCellOSS1;
@@ -863,6 +974,9 @@ public class ERBR extends javax.swing.JFrame {
     private javax.swing.JButton loadRehomingBtn1;
     private javax.swing.JTextArea logging;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JButton paramterAdjustment;
+    private javax.swing.JButton paramterWorkingDirBtn;
+    private javax.swing.JLabel paramterWorkingDirPath;
     private javax.swing.JButton updateClientBtn;
     // End of variables declaration//GEN-END:variables
     private Processor processor = new Processor();

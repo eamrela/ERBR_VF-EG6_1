@@ -109,9 +109,6 @@ public class CutoverRelation {
     
     public void fetchExternalCell(String cellName,String rnc,String oss){
         String cId=null;
-        if(relationId.contains("00101>K31733")){
-            System.out.println("");
-        }
         if(cellName!=null && rnc!=null){
             if(cellName.length()>2){
                 if(cellName.contains("MeContext")){
@@ -549,9 +546,18 @@ public class CutoverRelation {
         
                 utranRelationStr = 
         "<un:UtranRelation id=\""+param.get("id")+"\" modifier=\"create\">\n" +
-        "    <un:attributes>\n" +
-          (destination==null? "</un:adjacentCell>":(param.get("adjacentCell")+"").length()==0?"</un:adjacentCell>\n":
-        "     <un:adjacentCell>"+param.get("adjacentCell")+"</un:adjacentCell>\n") +
+        "    <un:attributes>\n";
+        
+         if(param.get("adjacentCell")!=null){
+             if(param.get("adjacentCell").length()>2){
+                 utranRelationStr += "  <un:adjacentCell>"+param.get("adjacentCell")+"</un:adjacentCell>\n";
+             }
+         }else{
+             utranRelationStr += "  <un:adjacentCell>"+relationDestinationCell+"</un:adjacentCell>\n";
+         }
+         
+        
+        utranRelationStr += 
         "    </un:attributes>\n" +
         " <xn:VsDataContainer id=\""+param.get("id")+"\" modifier=\"create\">\n" +
         "  <xn:attributes>\n" +

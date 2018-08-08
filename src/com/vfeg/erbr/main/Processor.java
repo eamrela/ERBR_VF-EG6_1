@@ -14,6 +14,7 @@ import com.vfeg.erbr.util.CutoverPlanReader;
 import com.vfeg.erbr.util.CutoverRecord;
 import com.vfeg.erbr.util.NewSiteReader;
 import com.vfeg.erbr.util.NewSiteRecord;
+import com.vfeg.erbr.util.ParamterAdjuster;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -307,6 +308,57 @@ public class Processor {
         }
         XMLGenerator.generateFiles();
         System.out.println("Finished generating new site relation files");
+        System.out.println(". . . . . . . . . . . . . . . . . .");
+        XMLGenerator.resetCollections();
+    }
+
+    public void doParamterAdjustment() {
+        System.out.println("Going to generate paramter adjustment files...it might take a while");
+        System.out.println("Please wait");
+        String out="";
+        
+        out = "Initializing Adjuster";
+        appendSummary(out);
+        logger.logThis(SEVERITY.INFO,out,true);
+        
+        ParamterAdjuster adjuster = new ParamterAdjuster();
+        
+        out = "Looking up cells to adjust";
+        appendSummary(out);
+        logger.logThis(SEVERITY.INFO,out,true);
+        
+        out = adjuster.collectCellsToAdjust();
+        appendSummary(out);
+        logger.logThis(SEVERITY.INFO,out,true);
+        
+        out = "Applying Formula for [uarfcnUl] calculation\n";
+        out += "--------------------------------------------\n\n";
+        out += "2100 Band \n"+ 
+                "*********\n"+ 
+                "(UARFCNDL > 10562)\n" +
+                "UARFCNUL=5*[(UARFCNDL/5)-190]\n" +
+                "\n\n" +
+                "For 900 Band \n"+ 
+                "*********\n"+ 
+                "(2937<UARFCNDL <3088)\n" +
+                "UARFCNUL=5*[(UARFCNDL/5)-45]";
+        appendSummary(out);
+        logger.logThis(SEVERITY.INFO,out,true);
+        
+        adjuster.applyFormula();
+        
+        out = "Finished Applying formula and paramter adjustment";
+        appendSummary(out);
+        logger.logThis(SEVERITY.INFO,out,true);
+        
+        
+        
+        out = "Generation XML files";
+        appendSummary(out);
+        logger.logThis(SEVERITY.INFO,out,true);
+        
+        XMLGenerator.generateFiles();
+        System.out.println("Finished generating cells paramter adjustment files");
         System.out.println(". . . . . . . . . . . . . . . . . .");
         XMLGenerator.resetCollections();
     }

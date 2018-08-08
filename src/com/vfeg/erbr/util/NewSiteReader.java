@@ -1,5 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.vfeg.erbr.util;
-
 
 import com.vfeg.erbr.logger.LoggerProcess;
 import com.vfeg.erbr.logger.SEVERITY;
@@ -11,16 +15,11 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  *
  * @author eelaamr
  */
+
 public class NewSiteReader {
     private final static LoggerProcess logger = new LoggerProcess(NewSiteReader.class);
     
